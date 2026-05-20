@@ -112,29 +112,24 @@ describe("Index route startup navigation", () => {
     expect(redirectMock).not.toHaveBeenCalled();
   });
 
-  it("restores the persisted workspace when the online host matches its server id", async () => {
+  it("redirects to the persisted workspace when the online host matches its server id", async () => {
     state.anyOnlineHostServerId = "server-1";
     state.workspaceSelection = { serverId: "server-1", workspaceId: "workspace-a" };
 
     await renderIndex();
 
-    expect(navigateToWorkspaceMock).toHaveBeenCalledWith("server-1", "workspace-a", {
-      currentPathname: "/",
-    });
-    expect(redirectMock).not.toHaveBeenCalled();
-    expect(container.querySelector("[data-testid='startup-splash']")).not.toBeNull();
+    expect(navigateToWorkspaceMock).not.toHaveBeenCalled();
+    expect(redirectMock).toHaveBeenCalledWith("/h/server-1/workspace/workspace-a");
   });
 
-  it("restores the persisted workspace even when the first online host is different", async () => {
+  it("redirects to the persisted workspace even when the first online host is different", async () => {
     state.anyOnlineHostServerId = "server-2";
     state.workspaceSelection = { serverId: "server-1", workspaceId: "workspace-a" };
 
     await renderIndex();
 
-    expect(navigateToWorkspaceMock).toHaveBeenCalledWith("server-1", "workspace-a", {
-      currentPathname: "/",
-    });
-    expect(redirectMock).not.toHaveBeenCalled();
+    expect(navigateToWorkspaceMock).not.toHaveBeenCalled();
+    expect(redirectMock).toHaveBeenCalledWith("/h/server-1/workspace/workspace-a");
   });
 
   it("navigates to the host root when no persisted workspace exists", async () => {
